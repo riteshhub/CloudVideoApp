@@ -1,0 +1,54 @@
+package com.example.constant.cloudvideoapp;
+
+import android.media.MediaPlayer;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.MediaController;
+import android.widget.ProgressBar;
+import android.widget.VideoView;
+
+public class VideoActivity extends AppCompatActivity {
+
+
+    ProgressBar spinner;
+    VideoView videoView;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_video);
+
+        spinner = (ProgressBar)findViewById(R.id.my_spinner);
+
+        videoView = (VideoView) findViewById(R.id.video_view);
+        //uri.parse("https://googledrive.com/host/0By04j2zmqXZVd05CeVpSNXAyZWc");
+        videoView.setVideoPath("https://s3-ap-southeast-1.amazonaws.com/singapore.video.app/video540.mp4");
+        //videoView.setVideoURI(uri);
+        videoView.setMediaController(new MediaController(this));
+        videoView.requestFocus();
+        videoView.start();
+        videoView.setOnInfoListener(new MediaPlayer.OnInfoListener()
+        {
+            @Override
+            public boolean onInfo(MediaPlayer mp, int what, int extra) {
+
+                if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START)
+                {
+                    spinner.setVisibility(View.GONE);
+                    return true;
+                }
+                else if(what == MediaPlayer.MEDIA_INFO_BUFFERING_START)
+                {
+                    spinner.setVisibility(View.VISIBLE);
+                    return false;
+                }
+                else
+                {
+                    spinner.setVisibility(View.GONE);
+                    return true;
+                }
+            }
+        });
+    }
+}
